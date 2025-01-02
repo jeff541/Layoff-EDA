@@ -85,13 +85,13 @@ WITH Company_Year AS
   FROM layoffs_staging2
   GROUP BY company, YEAR(date)
 )
--- Here, we select the top three companies with the most layoffs each year. The results are ranked by year in ascending order and by the total number of layoffs in descending order.
+-- This CTE classifies the result of the previous CTE by year and gives the rank of each.
 , Company_Year_Rank AS (
   SELECT company, years, total_laid_off, DENSE_RANK() OVER (PARTITION BY years ORDER BY total_laid_off DESC) AS ranking
   FROM Company_Year
 )
 
--- here we take the three first company layoff per year ordering by year asc and total_laid_off desc
+-- Here, we select the top three companies with the most layoffs each year. The results are ranked by year in ascending order and by the total number of layoffs in descending order.
 SELECT company, years, total_laid_off, ranking
 FROM Company_Year_Rank
 WHERE ranking <= 3
